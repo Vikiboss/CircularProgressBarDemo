@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="zh">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CSS 实现圆环进度条示例</title>
+    <style>
+      :root {
+        --background-color: rgb(155, 227, 150);
+        --border-color: #3af;
+      }
+
+      body {
+        width: 98vw;
+        height: 98vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+      }
+
+      input {
+        margin-top: 20px;
+      }
+
+      #progress {
+        display: flex;
+        padding: 0;
+        width: 160px;
+        height: 160px;
+        background-color: var(--background-color);
+        overflow: hidden;
+        border-radius: 100%;
+        z-index: 1;
+      }
+
+      #progress > div {
+        height: 100%;
+        width: 100%;
+        background-color: var(--background-color);
+      }
+
+      #progress > div > div {
+        height: calc(100% - 2 * 6px);
+        width: calc(100% - 6px);
+        border: 6px solid var(--border-color);
+        background-color: var(--background-color);
+      }
+
+      #progress > div:nth-child(1) {
+        overflow: hidden;
+      }
+
+      #progress > div:nth-child(1) > div {
+        z-index: 2;
+        border-right: none;
+        border-top-left-radius: 100% 50%;
+        border-bottom-left-radius: 100% 50%;
+        transform-origin: 100% 50%;
+        transform: rotate(-90deg);
+      }
+
+      #progress > div:nth-child(2) {
+        overflow: hidden;
+      }
+
+      #progress > div:nth-child(2) > div {
+        z-index: 3;
+        border-left: none;
+        border-top-right-radius: 100% 50%;
+        border-bottom-right-radius: 100% 50%;
+        transform-origin: 0% 50%;
+        transform: rotate(0deg);
+      }
+    </style>
+  </head>
+  <body>
+    <div id="progress">
+      <div>
+        <div></div>
+      </div>
+      <div>
+        <div></div>
+      </div>
+    </div>
+
+    <input type="number" max="100" min="0" value="75" />
+
+    <script>
+      const div1 = document.querySelector('#progress > div:nth-child(1) > div');
+      const div2 = document.querySelector('#progress > div:nth-child(2) > div');
+
+      const input = document.querySelector('input');
+
+      const handleChange = (e) => {
+        const percent = Number(e.target.value);
+
+        const shouldLeftRotate = percent >= 50;
+        const leftRate = percent === 100 ? 0 : -(1 - (percent % 50) / 50) * 180;
+
+        const shouldRightRotate = percent < 50;
+        const rightRate = -(1 - (percent % 50) / 50) * 180;
+
+        div1.style.transform = `rotate(${shouldLeftRotate ? leftRate : -180}deg)`;
+        div2.style.transform = `rotate(${shouldRightRotate ? rightRate : 0}deg)`;
+      };
+
+      input.onchange = handleChange;
+    </script>
+  </body>
+</html>
